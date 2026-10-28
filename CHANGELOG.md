@@ -176,6 +176,21 @@ All notable changes will be documented here.
   line so the shell prompt does not sit right under it. The
   `-c "<title>"` line is gone with the counts, since the id always opens
   this session and a title can be shadowed by a newer `<title> #N`.
+- **Delegated agents no longer stop on a repository convention the brief
+  overrides.** The goal echo-back told an agent to stop whenever its brief
+  conflicted with anything, so a brief saying "do not create a branch" met
+  `AGENTS.md`'s "branch first" and the agent declined without making a
+  change. On `benchmarks/product-ab/v1` with `gpt-6.1-sol` that declined 28
+  of 37 tasks in under a minute. The brief now outranks repository workflow
+  rules, and only a brief that contradicts itself is stopped on. Rerun on
+  33 of those tasks, declines and missing claims fell from 26 to 4 (the
+  gate withdrew 3 of those) and passes went from 3 to 4. False completions
+  rose from 4 to 25, the same rate as Hermes alone (27): the gate cannot
+  see a missing fix, which is the next thing to close.
+- **product-ab prices cached input once.** Hermes' usage file counts cache
+  reads inside `input_tokens` on the Codex route, and the lane priced them
+  again as cache reads, so one task read $35.77 instead of $4.98. The control
+  model moves from the retired `gpt-5.6-sol` to `gpt-6.1-sol`.
 
 ## 4.0.3 - 2026-10-27
 

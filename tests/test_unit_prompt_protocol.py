@@ -71,6 +71,17 @@ class ProtocolContentTests(unittest.TestCase):
         self.assertIn(STRUCTURAL_SEARCH_DISCIPLINE_GUIDANCE, prompt)
         self.assertIn("Commit your work; do not merge or push other branches.", prompt)
 
+    def test_the_brief_outranks_repository_workflow_rules(self) -> None:
+        # "Stop if they conflict with your brief" made a delegated agent halt
+        # whenever the caller's instruction (no branch, no commit) met an
+        # AGENTS.md convention (branch first): product-ab/v1 on gpt-6.1-sol
+        # declined 28 of 37 tasks in under a minute over exactly that. The
+        # brief now outranks repository workflow rules; only a brief that
+        # contradicts itself is stopped on.
+        self.assertIn("brief outranks repo workflow rules", GOAL_ECHO_PROTOCOL)
+        self.assertIn("only a self-contradiction", GOAL_ECHO_PROTOCOL)
+        self.assertNotIn("If they conflict with your brief", GOAL_ECHO_PROTOCOL)
+
     def test_structural_search_discipline_rides_the_shared_invariant_preamble(self) -> None:
         self.assertIn(STRUCTURAL_SEARCH_DISCIPLINE_GUIDANCE, shared_unit_preamble_lines(_GOAL))
 
